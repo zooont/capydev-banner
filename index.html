@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Untitled document</title>
+</head>
+<body>
+  <div id="container"></div>
+  <script>
+    const container = document.getElementById('container');
+    const linkUrl = "https://t.me/kapydev";
+    const imgUrl = "banner.svg";
+
+    const a = document.createElement('a');
+    a.href = linkUrl;
+    a.target = "_blank";
+
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.alt = "kapydev tg";
+    img.style.cursor = "pointer";
+
+    a.appendChild(img);
+    container.appendChild(a);
+  </script>
+</body>
+</html>
