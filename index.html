@@ -2,47 +2,95 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Untitled document</title>
+  <title>Капибары</title>
   <style>
-    #container img {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #1e1e1e;
+      font-family: sans-serif;
+    }
+
+    #container {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      background-color: #2a2a2a;
+      padding: 20px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    img {
       opacity: 0;
       transition: opacity 1s ease;
       cursor: pointer;
-      display: block;
-      max-width: 100%;
+      max-width: 220px;
       height: auto;
+      border-radius: 12px;
     }
-    #container img.visible {
+
+    img.visible {
       opacity: 1;
+    }
+
+    a {
+      display: inline-block;
     }
   </style>
 </head>
 <body>
-  <div id="container"></div>
+  <div id="container">
+    <!-- Баннер и капибара будут вставлены через JS -->
+  </div>
+
   <script>
+    const container = document.getElementById('container');
+    const linkUrl = "https://t.me/kapydev";
+
+    // Определяем поддерживается ли SVG
     function supportsSVG() {
       return document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1");
     }
 
-    const container = document.getElementById('container');
-    const linkUrl = "https://t.me/kapydev";
+    // Создаём баннер-ссылку
+    const bannerImg = document.createElement('img');
+    bannerImg.src = supportsSVG() ? 'banner.svg' : 'banner.png';
+    bannerImg.alt = "kapydev banner";
+    bannerImg.onload = () => bannerImg.classList.add('visible');
 
-    const imgUrl = supportsSVG() ? "banner.svg" : "banner.png";
+    const link = document.createElement('a');
+    link.href = linkUrl;
+    link.target = "_blank";
+    link.appendChild(bannerImg);
 
-    const a = document.createElement('a');
-    a.href = linkUrl;
-    a.target = "_blank";
+    container.appendChild(link);
 
-    const img = document.createElement('img');
-    img.src = imgUrl;
-    img.alt = "kapydev tg";
+    // Получаем список .webp капибар с сервера
+    fetch('/api/kapybaras')
+      .then(res => res.json())
+      .then(files => {
+        if (!files || files.length === 0) return;
 
-    img.onload = () => {
-      img.classList.add('visible');
-    };
+        const randomFile = files[Math.floor(Math.random() * files.length)];
+        const capybaraImg = document.createElement('img');
+        capybaraImg.src = `/kapybaras/${randomFile}`;
+        capybaraImg.alt = "Случайная капибара";
+        capybaraImg.onload = () => capybaraImg.classList.add('visible');
 
-    a.appendChild(img);
-    container.appendChild(a);
+        container.appendChild(capybaraImg);
+      })
+      .catch(err => {
+        console.error("Ошибка загрузки капибары:", err);
+      });
   </script>
 </body>
 </html>
