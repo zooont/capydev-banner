@@ -3,13 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <title>Untitled document</title>
+  <style>
+    #container img {
+      opacity: 0;
+      transition: opacity 1s ease;
+      cursor: pointer;
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    #container img.visible {
+      opacity: 1;
+    }
+  </style>
 </head>
 <body>
   <div id="container"></div>
   <script>
+    function supportsSVG() {
+      return document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#BasicStructure", "1.1");
+    }
+
     const container = document.getElementById('container');
     const linkUrl = "https://t.me/kapydev";
-    const imgUrl = "banner.svg";
+
+    const imgUrl = supportsSVG() ? "banner.svg" : "banner.png";
 
     const a = document.createElement('a');
     a.href = linkUrl;
@@ -18,7 +36,10 @@
     const img = document.createElement('img');
     img.src = imgUrl;
     img.alt = "kapydev tg";
-    img.style.cursor = "pointer";
+
+    img.onload = () => {
+      img.classList.add('visible');
+    };
 
     a.appendChild(img);
     container.appendChild(a);
